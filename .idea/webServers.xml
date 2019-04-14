@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="2976147d-aa30-4b87-8fd3-92bcaffa657b" name="blog" url="http://yun.iaoe.xyz">
+        <fileTransfer host="yun.iaoe.xyz" port="22" rootFolder="/var/www/xcx/public/blog" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
