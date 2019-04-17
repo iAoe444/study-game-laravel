@@ -21,4 +21,16 @@ class StudyTimeController extends Controller
             ->toJson();
         return $ranking;
     }
+
+    //TODO 完成completeTomato的基本功能
+    //TODO 完成多次内容得输入
+    public function completeTomato(Request $request)
+    {
+
+    }
+
+    public function getTomato(Request $request)
+    {
+
+    }
 }

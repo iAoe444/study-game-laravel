@@ -26,4 +26,14 @@ class WeChatController extends Controller
         else
             return response()->json(['result'=>'fail']);
     }
+
+    public function getText(Request $request)
+    {
+        $file = $request->file('picture')->store('handWriting');
+        if(isset($file))
+        {
+            var_dump($file);
+        }else
+            return response()->json(['result'=>'fail','msg'=>'Lost File']);
+    }
 }
