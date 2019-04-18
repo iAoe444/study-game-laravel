@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Http\Controllers\ToolController;
 use App\StudyTime;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -35,6 +36,10 @@ class Kernel extends ConsoleKernel
                 StudyTime::query()->update(['weekly_time'=>0]);         //周时间
             StudyTime::query()->update(['daily_time'=>0]);              //日时间
         })->daily();
+
+        $schedule->call(function (){
+            Cache::put('token',ToolController::getToken());
+        })->monthly();
     }
 
     /**

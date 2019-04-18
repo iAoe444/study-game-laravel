@@ -15,8 +15,7 @@ class UserController extends Controller
     public function userOrCreate(Request $request)
     {
         //先获取openid
-        $weChatController = new WeChatController();
-        $res = json_decode($weChatController->getOpenId($request)->getContent());
+        $res = json_decode(ToolController::getOpenId($request)->getContent());
 
         //这里用于测试openId
         $openId = 't'.rand(1000,9999);

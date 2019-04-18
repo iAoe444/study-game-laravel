@@ -10,4 +10,5 @@ class CompleteTomato extends Model
 
     //关闭自定义时间戳
     public $timestamps = false;
+    protected $guarded = [];
 }

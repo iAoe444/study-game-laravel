@@ -10,29 +10,29 @@ class TaskController extends Controller
     //TODO 完成其他逻辑的优化
     //TODO 写代码注释
     /*
-     *
+     * 添加任务
      * */
-    //需要增加openId的验证，成功后返回taskid，判断元素是否存在等等
+    //需要增加openId的验证，判断元素是否存在等等
     public function addTask(Request $request)
     {
         $openId = $request->input('openId');
-        $task_content = $request->input('task_content');
+        $taskContent = $request->input('taskContent');
 
-        $task = new Task();
-        $task->task= $task_content;
-        $task->open_id= $openId;
-        $task->save();
+        $task = Task::create([
+            'open_id'=>$openId,
+            'task_content'=>$taskContent
+        ]);
 
-        return response()->json(['result' => 'success']);
+        return response()->json(['result' => 'success','msg' => ['taskId' => $task->task_id]]);
     }
 
     public function updateTask(Request $request)
     {
         $taskId = $request->input('taskId');
-        $task_content = $request->input('task_content');
+        $taskContent = $request->input('taskContent');
 
         $task = Task::find($taskId);
-        $task->task = $task_content;
+        $task->task = $taskContent;
         $bool = $task->save();
 
         return response()->json(['result' => 'success']);

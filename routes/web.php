@@ -20,13 +20,15 @@ Route::group(['prefix' => 'user'],function (){
     Route::any('updateUser',['as'=>'updateUser','uses'=>'UserController@updateUser']);
 });
 
-Route::group(['prefix' => 'studyTime'],function (){
-    Route::any('ranking',['as'=>'ranking','uses'=>'StudyTimeController@ranking']);
+Route::group(['prefix' => 'study'],function (){
+    Route::any('ranking',['as'=>'ranking','uses'=>'StudyController@ranking']);
+    Route::any('completeTomato',['as'=>'completeTomato','uses'=>'StudyController@completeTomato']);
+    Route::any('getTomato',['as'=>'getTomato','uses'=>'StudyController@getTomato']);
 });
 
 Route::group(['prefix' => 'tool'],function (){
-    Route::any('getOpenId',['as'=>'getOpenId','uses'=>'WeChatController@getOpenId']);
-    Route::post('getText',['as'=>'getText','uses'=>'WeChatController@getText']);
+    Route::any('getOpenId',['as'=>'getOpenId','uses'=>'ToolController@getOpenId']);
+    Route::post('getText',['as'=>'getText','uses'=>'ToolController@getText']);
 });
 
 Route::group(['prefix' => 'task'],function (){

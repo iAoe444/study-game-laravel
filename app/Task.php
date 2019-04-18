@@ -13,4 +13,5 @@ class Task extends Model
     {
         return time();	//自定义时间戳
     }
+    protected $fillable = ['task_content','open_id'];
 }
