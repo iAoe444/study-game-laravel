@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\CompleteTomato;
-use App\StudyTime;
+use App\Study;
 use Illuminate\Http\Request;
 
+include_once "Utils\ReqUtils.php";
 class StudyController extends Controller
 {
     /*
@@ -95,11 +96,51 @@ class StudyController extends Controller
         return response()->json(['result' => 'success','msg' => $tomatoArr]);
     }
 
+
+    //COMPLETE 4.19 用户点击完成学习后的功能
+    /**
+     * 用户完成学习后的功能
+     * @param 用户的openId
+     * 点击完成学习后，我们通过今日的学习时间，来计算用户金币的添加量，以及用户段位的提升
+     * @return 用户今日学习时间，用户金币的增加量
+    */
+    public function completeStudy(Request $request)
+    {
+        $req = \ReqUtils::paramIntact($request,['openId']);
+        if ($req['result']=='success')
+        {
+            $req = $req['msg'];
+            $openId = $req->openId;
+            $userStudy = Study::find($openId);
+
+            //1. 完成一个任务就是添加一个金币
+            $completeTask = $userStudy->complete_task;  //获取用户今天完成的任务
+            $userStudy->coin += $completeTask;
+
+            //2. 学习25分钟就是升一颗星
+            $dailyTime = $userStudy->daily_time;
+            $duanWei = intval($userStudy->study_time/60/25);
+            $yesterdayDuanWei = intval(($userStudy->study_time-$dailyTime)/60/25);
+
+            //3. 因为用户上传了自己的学习记录，所以设置为true，防止日更新时再次更新数据
+            $userStudy->if_upload = true;
+
+            $userStudy->save();
+            
+            return response()->json([
+                'completeTask'=>$completeTask,
+                'getCoin'=>$completeTask,
+                'todyStudyTime'=>self::ts2hm($dailyTime),
+                'duanWei'=>$duanWei,
+                'yesterdayDanWei'=>$yesterdayDuanWei
+            ]);
+        }
+        else return response()->json($req);
+    }
     //----------------------------------工具方法--------------------------------------------------
     /*
      * 完成一个番茄任务后要做的事情，记录下这次任务，并且累加用户的学习时间
      * */
-    //TODO 加入用户属性
     private function setCompleteTomato($task)
     {
         $taskContent = $task->taskContent;
@@ -108,7 +149,7 @@ class StudyController extends Controller
         $endAt = $task->endAt;
         $comment = $task->comment;
 
-        //往数据库中记录下这次任务
+        //1. 往数据库中的tomato表中记录下这次任务
         $completeTomato = CompleteTomato::create([
             'task_content' => $taskContent,
             'comment' => $comment,
@@ -119,12 +160,18 @@ class StudyController extends Controller
 
         //获取两个时间戳的时间差
         $timediff = $endAt - $startAt;
-        //往用户学习时间表中添加时长
-        $studytime = StudyTime::find($openId);
-        $studytime->daily_time = $studytime->daily_time+$timediff;
-        $studytime->weekly_time = $studytime->weekly_time+$timediff;
-        $studytime->monthly_time = $studytime->monthly_time+$timediff;
-        $studytime->save();
+
+        //2. 往用户学习时间表中添加时长
+        $study = Study::find($openId);
+        $study->daily_time += $timediff;
+        $study->weekly_time += $timediff;
+        $study->monthly_time += $timediff;
+        $study->study_time += $timediff;
+
+        //3. 完成一个任务给今日任务总数加1
+        $study->complete_task+=1;
+
+        $study->save();
     }
 
     //时间戳转时钟分钟函数
@@ -138,8 +185,8 @@ class StudyController extends Controller
     //获取指定类型得排行的函数
     private static function getRanking($type)
     {
-        $ranking = StudyTime::join('user',function ($join){
-            $join->on('user.open_id','=','user_study_time.open_id');
+        $ranking = Study::join('user',function ($join){
+            $join->on('user.open_id','=','user_study.open_id');
         })->orderBy($type.'_time','desc')
             ->limit(10)
             ->get(['user_name',$type.'_time','avatar_url']);

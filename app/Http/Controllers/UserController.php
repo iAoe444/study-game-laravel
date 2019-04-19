@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\StudyTime;
+use App\Study;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -26,18 +26,17 @@ class UserController extends Controller
             //如果存在openid，则继续，如果不存在，则创建一个新用户
             if (!isset($user)) {
                 $num = User::count();
-                //创建用户表
+                //1. 创建用户表
                 $user = new User();
                 $user->open_id = $openId;
                 $user->user_name = '微信用户'.$num;
 
-                //创建用户时间表
-                $studyTime = new StudyTime();
-                $studyTime->open_id = $openId;
-
+                //2. 创建用户学习表
+                $study = new Study();
+                $study->open_id = $openId;
 
                 $user->save();
-                $studyTime->save();
+                $study->save();
 
                 //创建成功返回创建成功，并返回openid
                 return response()->json(['result' => 'success', 'msg' => ['openid' => $openId]]);

@@ -3,7 +3,7 @@
 namespace App\Console;
 
 use App\Http\Controllers\ToolController;
-use App\StudyTime;
+use App\Study;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -31,15 +31,17 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             //这个用于清空用户学习时间
             if(date("d") == "01")
-                StudyTime::query()->update(['monthly_time'=>0]);        //月时间
+                Study::query()->update(['monthly_time'=>0]);        //月时间
             if(date("D") == "Mon")
-                StudyTime::query()->update(['weekly_time'=>0]);         //周时间
-            StudyTime::query()->update(['daily_time'=>0]);              //日时间
+                Study::query()->update(['weekly_time'=>0]);         //周时间
+            Study::query()->update(['daily_time'=>0]);              //日时间
         })->daily();
 
         $schedule->call(function (){
             Cache::put('token',ToolController::getToken());
         })->monthly();
+
+        //TODO 定期帮用户添加金币之类的
     }
 
     /**

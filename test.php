@@ -99,3 +99,9 @@ $bodys = array(
 $res = request_post($url, $bodys);
 
 var_dump($res);
+
+//TODO 成就
+//TODO 商城-小程序变色
+//TODO 目标
+//FIXME 去掉监听
+//FIXME 去掉事件

@@ -24,6 +24,7 @@ Route::group(['prefix' => 'study'],function (){
     Route::any('ranking',['as'=>'ranking','uses'=>'StudyController@ranking']);
     Route::any('completeTomato',['as'=>'completeTomato','uses'=>'StudyController@completeTomato']);
     Route::any('getTomato',['as'=>'getTomato','uses'=>'StudyController@getTomato']);
+    Route::post('completeStudy',['as'=>'completeStudy','uses'=>'StudyController@completeStudy']);
 });
 
 Route::group(['prefix' => 'tool'],function (){
