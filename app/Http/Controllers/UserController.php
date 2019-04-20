@@ -18,10 +18,10 @@ class UserController extends Controller
         $res = json_decode(ToolController::getOpenId($request)->getContent());
 
         //这里用于测试openId
-        $openId = 't'.rand(1000,9999);
+        // $openId = 't'.rand(1000,9999);
 
-        if (true) {
-//            $openId = $res->openId;
+        if (isset($res->openId)) {
+            $openId = $res->openId;
             $user = User::find($openId);
             //如果存在openid，则继续，如果不存在，则创建一个新用户
             if (!isset($user)) {

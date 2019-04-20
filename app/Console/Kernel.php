@@ -41,7 +41,8 @@ class Kernel extends ConsoleKernel
             Cache::put('token',ToolController::getToken());
         })->monthly();
 
-        //TODO 定期帮用户添加金币之类的
+        //TODO 到规定时间清空用户的今天完成任务，是否上传，并且传递模板消息
+        //TODO 定期减低用户的段位
     }
 
     /**
