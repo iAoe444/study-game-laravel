@@ -44,7 +44,7 @@ class UserController extends Controller
                 //已经存在返回exist
                 return response()->json(['result' => 'exist']);
         } else
-            return response()->json(['result' => 'fail','msg' => 'lost jsCode']);
+            return response()->json(['result' => 'fail','msg' => 'Bad jsCode']);
     }
 
     /*

@@ -13,7 +13,8 @@ class ToolController extends Controller
      * */
     public static function getOpenId(Request $request)
     {
-        $jsCode = $request->input('jsCode');
+        $req = $request->getContent();
+        $jsCode = json_decode($req)->jsCode;
         $client = new Client();
         $url = sprintf("https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code",
             env('WECHAT_APPID'), env('WECHAT_SECRET'), $jsCode);
@@ -21,12 +22,12 @@ class ToolController extends Controller
             $req = $client->request('GET', $url, ['timeout' => 1.5]);
             $req = $req->getBody();
             $req = json_decode($req);
-            $openid = $req->openid;
+            $openId = $req->openid;
         } catch(\Throwable $e) {
             response()->json(['result'=>'error']);
         }
-        if (isset($openid))
-            return response()->json(['result'=>'success','openid'=>$openid]);
+        if (isset($openId))
+            return response()->json(['result'=>'success','openId'=>$openId]);
         else
             return response()->json(['result'=>'fail']);
     }
