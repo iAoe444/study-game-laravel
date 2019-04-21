@@ -13,8 +13,7 @@ class ToolController extends Controller
      * */
     public static function getOpenId(Request $request)
     {
-        $req = $request->getContent();
-        $jsCode = json_decode($req)->jsCode;
+        $jsCode = $request->input('jsCode');
         $client = new Client();
         $url = sprintf("https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code",
             env('WECHAT_APPID'), env('WECHAT_SECRET'), $jsCode);

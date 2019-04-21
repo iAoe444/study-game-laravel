@@ -12,10 +12,10 @@ CREATE TABLE IF NOT EXISTS `user`
 (
 	`open_id` CHAR(28) NOT NULL PRIMARY KEY COMMENT '微信openid',
     `user_name` VARCHAR(20) NOT NULL DEFAULT '' COMMENT '用户名',
-    `avatar_url` VARCHAR(100) NOT NULL DEFAULT '0' COMMENT '头像',
+    `avatar_url` VARCHAR(200) NOT NULL DEFAULT '0' COMMENT '头像',
     `slogan` VARCHAR(100) NOT NULL DEFAULT '今日的底线永远高于昨日的巅峰' COMMENT '口号',
     `target` VARCHAR(20) NOT NULL DEFAULT '无' COMMENT '目标',
-	`gender` CHAR(2) NOT NULL DEFAULT '未知' COMMENT '性别',
+	`gender` TINYINT(1) NOT NULL DEFAULT '未知' COMMENT '性别',
     `province` VARCHAR(10) NOT NULL DEFAULT '广东' COMMENT '用户省份',
     `city` VARCHAR(10) NOT NULL DEFAULT '广州' COMMENT '用户城市',
     `country` VARCHAR(10) NOT NULL DEFAULT '中国' COMMENT '用户国家',

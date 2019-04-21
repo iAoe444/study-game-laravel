@@ -6,7 +6,6 @@ use App\CompleteTomato;
 use App\Study;
 use Illuminate\Http\Request;
 
-include_once "Utils\ReqUtils.php";
 class StudyController extends Controller
 {
     /*
@@ -16,13 +15,11 @@ class StudyController extends Controller
      * */
     public function ranking(Request $request)
     {
-        $req = $request->getContent();
-        $req = json_decode($req);
+        $type = $request->input('type');
 
         //如果存在type
         //根据要取得类型，返回日，周，月排行榜
-        if(isset($req) && array_key_exists("type", $req)){
-            $type = $req->type;
+        if($type){
             //先从数据库中搜索获取处理过后的前10榜单
             $ranking = self::getRanking($type);
             return response()->json(['result' => 'success','msg' => $ranking]);
@@ -47,21 +44,17 @@ class StudyController extends Controller
      * */
     public function completeTomato(Request $request)
     {
-        $req = $request->getContent();
-        $req = json_decode($req);
-
         //查看是否传入的是多任务
-        if(isset($req) && array_key_exists("tasks", $req))
+        if($request->input("1"))
         {
             //多任务处理
-            $tasks = $req->tasks;
-            foreach ($tasks as $task){
+            foreach ($request->input() as $task){
                 $this->setCompleteTomato($task);
             }
-        }elseif (isset($req))
+        }elseif ($request->input())
         {
             //单任务处理
-            $this->setCompleteTomato($req);
+            $this->setCompleteTomato($request->input());
         }
         else
         {
@@ -106,11 +99,9 @@ class StudyController extends Controller
     */
     public function completeStudy(Request $request)
     {
-        $req = \ReqUtils::paramIntact($request,['openId']);
-        if ($req['result']=='success')
+        $openId = $request->input('openId');
+        if ($openId)
         {
-            $req = $req['msg'];
-            $openId = $req->openId;
             $userStudy = Study::find($openId);
 
             //1. 完成一个任务就是添加一个金币
@@ -128,14 +119,17 @@ class StudyController extends Controller
             $userStudy->save();
             
             return response()->json([
-                'completeTask'=>$completeTask,
-                'getCoin'=>$completeTask,
-                'todyStudyTime'=>self::ts2hm($dailyTime),
-                'duanWei'=>$duanWei,
-                'yesterdayDanWei'=>$yesterdayDuanWei
+                'result' => 'success',
+                'msg' =>[
+                    'completeTask'=>$completeTask,
+                    'getCoin'=>$completeTask,
+                    'todyStudyTime'=>self::ts2hm($dailyTime),
+                    'duanWei'=>$duanWei,
+                    'yesterdayDanWei'=>$yesterdayDuanWei
+                ]
             ]);
         }
-        else return response()->json($req);
+        else return response()->json(['result' => 'success','msg' => 'lost param']);
     }
     //----------------------------------工具方法--------------------------------------------------
     /*
@@ -143,11 +137,11 @@ class StudyController extends Controller
      * */
     private function setCompleteTomato($task)
     {
-        $taskContent = $task->taskContent;
-        $openId = $task->openId;
-        $startAt = $task->startAt;
-        $endAt = $task->endAt;
-        $comment = $task->comment;
+        $taskContent = $task['taskContent'];
+        $openId = $task['openId'];
+        $startAt = $task['startAt'];
+        $endAt = $task['endAt'];
+        $comment = $task['comment'];
 
         //1. 往数据库中的tomato表中记录下这次任务
         $completeTomato = CompleteTomato::create([

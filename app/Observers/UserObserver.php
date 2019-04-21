@@ -14,7 +14,7 @@ class UserObserver
      */
     public function created(User $user)
     {
-        var_dump("hello");
+        // var_dump("hello");
     }
 
     /**
