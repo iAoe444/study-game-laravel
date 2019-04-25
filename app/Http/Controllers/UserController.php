@@ -42,7 +42,7 @@ class UserController extends Controller
                 return response()->json(['result' => 'success', 'msg' => ['openid' => $openId]]);
             } else
                 //已经存在返回exist
-                return response()->json(['result' => 'exist']);
+                return response()->json(['result' => 'exist', 'msg' => ['openid' => $openId]]);
         } else
             return response()->json(['result' => 'fail','msg' => 'Error jsCode']);
     }

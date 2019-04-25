@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\CompleteTomato;
 use App\Study;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\User;
 
 class StudyController extends Controller
 {
@@ -15,6 +17,7 @@ class StudyController extends Controller
      * */
     public function ranking(Request $request)
     {
+        $openId = $request->input('openId');
         $type = $request->input('type');
 
         //如果存在type
@@ -22,16 +25,18 @@ class StudyController extends Controller
         if($type){
             //先从数据库中搜索获取处理过后的前10榜单
             $ranking = self::getRanking($type);
-            return response()->json(['result' => 'success','msg' => $ranking]);
+            //获取我的排名
+            $myRanking = $this->getMyRanking($openId,$type);
+            return response()->json(['result' => 'success','msg' => [$myRanking,$ranking]]);
         }else{
             //这里的是没有type的情况,返回所有排行版
             $dailyRanking = self::getRanking('daily');
             $weeklyRanking = self::getRanking('weekly');
             $monthlyRanking = self::getRanking('monthly');
             return response()->json(['result' => 'success','msg' => [
-                'dailyRanking'=>$dailyRanking,
-                'weeklyRanking'=>$weeklyRanking,
-                'monthlyRanking'=>$monthlyRanking
+                'dailyRanking'=>[$this->getMyRanking($openId,'daily'),$dailyRanking],
+                'weeklyRanking'=>[$this->getMyRanking($openId,'weekly'),$weeklyRanking],
+                'monthlyRanking'=>[$this->getMyRanking($openId,'monthly'),$monthlyRanking]
             ]]);
         }
     }
@@ -198,5 +203,24 @@ class StudyController extends Controller
             ];
         }
         return $studyTimeArr;
+    }
+
+    //获取我的排名
+    public function getMyRanking($openId,$type)
+    {
+        $me = DB::select("select b.* FROM
+        (
+        SELECT t.*, @rownum := @rownum + 1 AS rownum
+        FROM (SELECT @rownum := 0) r,
+        (SELECT * FROM user_study ORDER BY ".$type."_time DESC) AS t
+        ) AS b WHERE b.open_id = '".$openId."'");
+        $user = User::find($openId);
+        $typeTime = $type.'_time';
+        return [
+            'me'=>[
+                'time'=>$me[0]->$typeTime,
+                'ranking'=>$me[0]->rownum,
+                'avatarUrl'=>$user->avatar_url
+        ]];
     }
 }
