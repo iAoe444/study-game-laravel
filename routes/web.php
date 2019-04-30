@@ -38,3 +38,12 @@ Route::group(['prefix' => 'task'],function (){
    Route::post('deleteTask',['as'=>'deleteTask','uses'=>'TaskController@deleteTask']);
    Route::post('getTask',['as'=>'getTasks','uses'=>'TaskController@getTasks']);
 });
+
+Route::group(['prefix' => 'store'],function (){
+    Route::post('addGoods',['as'=>'addGoods','uses'=>'StoreController@addGoods']);
+    Route::post('updateGoods',['as'=>'updateGoods','uses'=>'StoreController@updateGoods']);
+    Route::post('deleteGoods',['as'=>'deleteGoods','uses'=>'StoreController@deleteGoods']);
+    // Route::post('getTask',['as'=>'getGoods','uses'=>'StoreController@getTasks']);
+ });
+
+ Route::post('test',['as'=>'test','uses'=>'TestController@test']);
