@@ -46,4 +46,8 @@ Route::group(['prefix' => 'store'],function (){
     // Route::post('getTask',['as'=>'getGoods','uses'=>'StoreController@getTasks']);
  });
 
+ Route::group(['prefix' => 'page'],function (){
+    Route::post('index',['as'=>'index','uses'=>'PageController@index']);
+ });
+
  Route::post('test',['as'=>'test','uses'=>'TestController@test']);
