@@ -26,7 +26,7 @@ class StudyController extends Controller
             //先从数据库中搜索获取处理过后的前10榜单
             $ranking = self::getRanking($type);
             //获取我的排名
-            $myRanking = $this->getMyRanking($openId,$type);
+            $myRanking = self::getMyRanking($openId,$type);
             return response()->json(['result' => 'success','msg' => [$myRanking,$ranking]]);
         }else{
             //这里的是没有type的情况,返回所有排行版
@@ -34,9 +34,9 @@ class StudyController extends Controller
             $weeklyRanking = self::getRanking('weekly');
             $monthlyRanking = self::getRanking('monthly');
             return response()->json(['result' => 'success','msg' => [
-                'dailyRanking'=>[$this->getMyRanking($openId,'daily'),$dailyRanking],
-                'weeklyRanking'=>[$this->getMyRanking($openId,'weekly'),$weeklyRanking],
-                'monthlyRanking'=>[$this->getMyRanking($openId,'monthly'),$monthlyRanking]
+                'dailyRanking'=>[self::getMyRanking($openId,'daily'),$dailyRanking],
+                'weeklyRanking'=>[self::getMyRanking($openId,'weekly'),$weeklyRanking],
+                'monthlyRanking'=>[self::getMyRanking($openId,'monthly'),$monthlyRanking]
             ]]);
         }
     }
@@ -113,10 +113,10 @@ class StudyController extends Controller
             $completeTask = $userStudy->complete_task;  //获取用户今天完成的任务
             $userStudy->coin += $completeTask;
 
-            //2. 学习25分钟就是升一颗星
+            //2. 学习60分钟就是升一颗星
             $dailyTime = $userStudy->daily_time;
-            $duanWei = intval($userStudy->study_time/60/25);
-            $yesterdayDuanWei = intval(($userStudy->study_time-$dailyTime)/60/25);
+            $duanWei = intval($userStudy->study_time/60/60);
+            $yesterdayDuanWei = intval(($userStudy->study_time-$dailyTime)/60/60);
 
             //3. 因为用户上传了自己的学习记录，所以设置为true，防止日更新时再次更新数据
             $userStudy->if_upload = true;
@@ -129,8 +129,8 @@ class StudyController extends Controller
                     'completeTask'=>$completeTask,
                     'getCoin'=>$completeTask,
                     'todyStudyTime'=>self::ts2hm($dailyTime),
-                    'duanWei'=>$duanWei,
-                    'yesterdayDanWei'=>$yesterdayDuanWei
+                    'duanWei'=>self::getDuanWei($openId),
+                    'yesterdayDuanWei'=>self::getDuanWei($yesterdayDuanWei)
                 ]
             ]);
         }
@@ -206,7 +206,7 @@ class StudyController extends Controller
     }
 
     //获取我的排名
-    public function getMyRanking($openId,$type)
+    public static function getMyRanking($openId,$type)
     {
         $me = DB::select("select b.* FROM
         (
@@ -222,5 +222,69 @@ class StudyController extends Controller
                 'ranking'=>$me[0]->rownum,
                 'avatarUrl'=>$user->avatar_url
         ]];
+    }
+
+    //段位计算,可传入openId或者duanWei
+    public static function getDuanWei($duanWeiOrOpenId)
+    {
+        //判断是openId还是duanWei
+        if(is_string($duanWeiOrOpenId)&&strlen($duanWeiOrOpenId)==28)
+        {
+            $userStudy = Study::find($duanWeiOrOpenId);
+            $duanWei = intval($userStudy->study_time/60/60);
+        }else
+            $duanWei = $duanWeiOrOpenId;
+        $duanWeiMsg=array();
+        $duanWeiArr = [
+            '倔强青铜Ⅲ'=>3,
+            '倔强青铜Ⅱ'=>3,
+            '倔强青铜Ⅰ'=>3,
+            '秩序白银Ⅲ'=>3,
+            '秩序白银Ⅱ'=>3,
+            '秩序白银Ⅰ'=>3,
+            '荣耀黄金Ⅳ'=>4,
+            '荣耀黄金Ⅲ'=>4,
+            '荣耀黄金Ⅱ'=>4,
+            '荣耀黄金Ⅰ'=>4,
+            '尊贵铂金Ⅳ'=>4,
+            '尊贵铂金Ⅲ'=>4,
+            '尊贵铂金Ⅱ'=>4,
+            '尊贵铂金Ⅰ'=>4,
+            '永恒钻石Ⅴ'=>5,
+            '永恒钻石Ⅳ'=>5,
+            '永恒钻石Ⅲ'=>5,
+            '永恒钻石Ⅱ'=>5,
+            '永恒钻石Ⅰ'=>5,
+            '至尊星耀Ⅴ'=>5,
+            '至尊星耀Ⅳ'=>5,
+            '至尊星耀Ⅲ'=>5,
+            '至尊星耀Ⅱ'=>5,
+            '至尊星耀Ⅰ'=>5
+        ];
+        $duanWeiImg = [
+            '倔强青铜'=>'jjqt',
+            '秩序白银'=>'zxby',
+            '荣耀黄金'=>'ychj',
+            '尊贵铂金'=>'zgbj',
+            '永恒钻石'=>'yhzs',
+            '至尊星耀'=>'zzxy',
+            '最强王者'=>'zqwz'
+        ];
+        $sum = $preSum = 0;
+        foreach ($duanWeiArr as $key => $value) {
+            $sum += $value;
+            if($duanWei<=$sum)
+            {
+                $duanWeiMsg['duanWeiName']=$key;
+                $duanWeiMsg['duanWeiNum']=[$duanWei-$preSum,$value];
+                $duanWeiMsg['duanWeiImg']=$duanWeiImg[substr($key,0,4*3)];
+                return $duanWeiMsg;
+            }
+            $preSum = $sum;
+        }
+        $duanWeiMsg['duanWeiName']='最强王者';
+        $duanWeiMsg['duanWeiNum']=[$duanWei-$sum];
+        $duanWeiMsg['duanWeiImg']='zqwz';
+        return $duanWeiMsg;
     }
 }

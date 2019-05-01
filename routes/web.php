@@ -48,6 +48,5 @@ Route::group(['prefix' => 'store'],function (){
 
  Route::group(['prefix' => 'page'],function (){
     Route::post('index',['as'=>'index','uses'=>'PageController@index']);
+    Route::post('function',['as'=>'test','uses'=>'PageController@_function']);
  });
-
- Route::post('test',['as'=>'test','uses'=>'TestController@test']);
