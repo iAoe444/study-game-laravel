@@ -218,7 +218,7 @@ class StudyController extends Controller
         $typeTime = $type.'_time';
         return [
             'me'=>[
-                'time'=>$me[0]->$typeTime,
+                'time'=>self::ts2hm($me[0]->$typeTime),
                 'ranking'=>$me[0]->rownum,
                 'avatarUrl'=>$user->avatar_url
         ]];

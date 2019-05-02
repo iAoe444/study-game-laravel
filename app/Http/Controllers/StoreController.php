@@ -80,4 +80,26 @@ class StoreController extends Controller
         else
             return response()->json(['result' => 'fail','msg' => 'lost goodsId']);
     }
+
+    //--------------------------------工具类---------------------------------------------
+    /*
+    *   获取商品
+    */
+    public static function getGoods($openId)
+    {
+        $Goods = Store::get()->where('open_id',$openId);
+        $GoodsArr = array();
+        $i=0;
+        foreach($Goods as $goods)
+        {
+            $arr = array();
+            $arr['goodsId'] = $goods->id;
+            $arr['goodsImage'] = env('APP_URL').$goods->img;
+            $arr['goodsName'] = $goods->goods;
+            $arr['goodsCost'] = $goods->coin;
+            $GoodsArr[$i] = $arr;
+            $i++;
+        }
+        return $GoodsArr;
+    }
 }

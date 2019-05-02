@@ -66,9 +66,30 @@ class PageController extends Controller
         //----------------2.金币信息------------------------
         $msg['coin'] = $userStudy->coin;
         //----------------3.排行信息------------------------
-        $msg['ranking'] = StudyController::getMyRanking($openId,'daily')['me']['ranking'];
+        $msg['ranking'] = StudyController::getMyRanking($openId, 'daily')['me']['ranking'];
         //----------------4.学习时长------------------------
         $msg['studyTime'] = StudyController::ts2hm($userStudy->study_time);
+
+        return response()->json(['result' => 'success', 'msg' => $msg]);
+    }
+
+    /*
+    *   商店页面
+    */
+    public function store(Request $request)
+    {
+        if (is_array($openId = self::userIfExit($request)))
+            return response()->json(self::userIfExit($request));
+        $msg = array();
+        $user = User::find($openId);
+        //----------------1.用户昵称------------------------
+        $msg['userName'] = $user->user_name;
+        //----------------2.用户头像------------------------
+        $msg['avatarUrl'] = $user->avatar_url;
+        //----------------3.用户金币------------------------
+        $msg['coin'] = Study::find($openId)->coin;
+        //----------------4.用户商品------------------------
+        $msg['goodsArr'] = StoreController::getGoods($openId);
 
         return response()->json(['result' => 'success', 'msg' => $msg]);
     }
@@ -87,4 +108,5 @@ class PageController extends Controller
         } else
             return ['result' => 'fail', 'msg' => 'lost openId'];
     }
+
 }
