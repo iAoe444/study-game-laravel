@@ -12,10 +12,11 @@ CREATE TABLE IF NOT EXISTS `user`
 (
 	`open_id` CHAR(28) NOT NULL PRIMARY KEY COMMENT '微信openid',
     `user_name` VARCHAR(20) NOT NULL DEFAULT '' COMMENT '用户名',
-    `avatar_url` VARCHAR(200) NOT NULL DEFAULT '0' COMMENT '头像',
+    `avatar_url` VARCHAR(100) NOT NULL DEFAULT '0' COMMENT '头像',
     `slogan` VARCHAR(100) NOT NULL DEFAULT '今日的底线永远高于昨日的巅峰' COMMENT '口号',
     `target` VARCHAR(20) NOT NULL DEFAULT '无' COMMENT '目标',
-	`gender` TINYINT(1) NOT NULL DEFAULT '未知' COMMENT '性别',
+    `target_time` INT NOT NULL DEFAULT 0 COMMENT '目标时间',
+	`gender` CHAR(2) NOT NULL DEFAULT '未知' COMMENT '性别',
     `province` VARCHAR(10) NOT NULL DEFAULT '广东' COMMENT '用户省份',
     `city` VARCHAR(10) NOT NULL DEFAULT '广州' COMMENT '用户城市',
     `country` VARCHAR(10) NOT NULL DEFAULT '中国' COMMENT '用户国家',
@@ -34,6 +35,7 @@ CREATE TABLE IF NOT EXISTS `user_study`
     `duan_wei` INT NOT NULL DEFAULT 0 COMMENT '段位',
     `complete_task` INT NOT NULL DEFAULT 0 COMMENT '今天完成的任务数量',
 	`if_upload` BOOLEAN NOT NULL DEFAULT FALSE COMMENT '用户今天是否上传记录',
+    `report_form_id` CHAR(32) COMMENT '用于学习报告的formid',
 	`updated_at` INT NOT NULL DEFAULT 0 COMMENT '更新时间', 
     `created_at` INT NOT NULL DEFAULT 0 COMMENT '创建时间'
 )ENGINE=InnoDB DEFAULT CHARSET=UTF8 COMMENT='用户学习表';
@@ -66,3 +68,19 @@ CREATE TABLE IF NOT EXISTS `user_complete_tomato`
 	`start_at` INT NOT NULL DEFAULT 0 COMMENT '开始时间', 
     `end_at` INT NOT NULL DEFAULT 0 COMMENT '结束时间'
 )ENGINE=InnoDB DEFAULT CHARSET=UTF8 COMMENT='用户完成一个番茄详情表';
+
+CREATE TABLE IF NOT EXISTS `store`
+(
+	`id` INT AUTO_INCREMENT NOT NULL PRIMARY KEY COMMENT '商品id',
+    `goods` VARCHAR(20) NOT NULL DEFAULT '' COMMENT '任务内容',
+    `img` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '商品图片',
+	`open_id` CHAR(28) NOT NULL COMMENT '微信openid',
+	`coin` INT NOT NULL DEFAULT 0 COMMENT '需要的金币'
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8 COMMENT='商店商品表';
+
+CREATE TABLE IF NOT EXISTS `target_time`
+(
+	`id` INT AUTO_INCREMENT NOT NULL PRIMARY KEY COMMENT '目标id',
+    `target` VARCHAR(20) NOT NULL DEFAULT '无' COMMENT '目标',
+    `end_at` INT NOT NULL DEFAULT 0 COMMENT '结束时间'
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8 COMMENT='目标时间表';

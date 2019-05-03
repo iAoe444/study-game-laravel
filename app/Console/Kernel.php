@@ -41,7 +41,12 @@ class Kernel extends ConsoleKernel
             Cache::put('token',ToolController::getToken());
         })->monthly();
 
-        //TODO 到规定时间清空用户的今天完成任务，是否上传，并且传递模板消息
+        //DONE 5.3到规定时间清空用户的今天完成任务，是否上传，并且传递模板消息
+        //TODO 测试学习报告功能
+        $schedule->call(function (){
+            ToolController::sendReport();
+        })->dailyAt('22:00');
+
         //TODO 定期减低用户的段位
     }
 
