@@ -152,3 +152,8 @@ function getDuanWei($duanWei)
     return $duanWeiMsg;
 }
 
+// var_dump($targetTime[0].'-'.$targetTime[1].'-'.$targetTime[2]);
+// $targetTime = date("Y-m-d",'2019-05-11');
+$targetTime = strtotime('2019-05-11');
+var_dump($targetTime);
+

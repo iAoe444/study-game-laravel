@@ -91,10 +91,8 @@ class UserController extends Controller
                     //导入目标时间
                     //如果该用户有自定义目标时间，则直接设置目标时间
                     if (isset($targetTime)) {
+                        $targetTime = strtotime($targetTime[0].'-'.$targetTime[1].'-'.$targetTime[2]);
                         $user->target_time = $targetTime;
-                    } elseif(isset(TargetTime::get()->where('target',$target)[0]->end_at)) { 
-                        //在数据库中需要这个目标的目标时间，并设置该用户的时间
-                        $user->target_time = TargetTime::get()->where('target',$target)[0]->end_at;
                     }
                     $updateItem .= 'target targetTime';
                 }
