@@ -16,7 +16,7 @@ Route::get('/', function () {
 });
 
 Route::group(['prefix' => 'user'],function (){
-    Route::any('userOrCreate',['as'=>'userOrCreate','uses'=>'UserController@userOrCreate']);
+    Route::any('userIfExist',['as'=>'userIfExist','uses'=>'UserController@userIfExist']);
     Route::any('updateUser',['as'=>'updateUser','uses'=>'UserController@updateUser']);
 });
 

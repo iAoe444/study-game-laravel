@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `user`
 (
 	`open_id` CHAR(28) NOT NULL PRIMARY KEY COMMENT '微信openid',
     `user_name` VARCHAR(20) NOT NULL DEFAULT '' COMMENT '用户名',
-    `avatar_url` VARCHAR(100) NOT NULL DEFAULT '0' COMMENT '头像',
+    `avatar_url` VARCHAR(200) NOT NULL DEFAULT 'http://yun.iaoe.xyz/image/user.png' COMMENT '头像',
     `slogan` VARCHAR(100) NOT NULL DEFAULT '今日的底线永远高于昨日的巅峰' COMMENT '口号',
     `target` VARCHAR(20) NOT NULL DEFAULT '无' COMMENT '目标',
     `target_time` INT NOT NULL DEFAULT 0 COMMENT '目标时间',
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `user_study`
     `duan_wei` INT NOT NULL DEFAULT 0 COMMENT '段位',
     `complete_task` INT NOT NULL DEFAULT 0 COMMENT '今天完成的任务数量',
 	`if_upload` BOOLEAN NOT NULL DEFAULT FALSE COMMENT '用户今天是否上传记录',
-    `report_form_id` CHAR(32) COMMENT '用于学习报告的formid',
+    `report_form_id` CHAR(32) DEFAULT '' COMMENT '用于学习报告的formid',
 	`updated_at` INT NOT NULL DEFAULT 0 COMMENT '更新时间', 
     `created_at` INT NOT NULL DEFAULT 0 COMMENT '创建时间'
 )ENGINE=InnoDB DEFAULT CHARSET=UTF8 COMMENT='用户学习表';

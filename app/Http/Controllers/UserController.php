@@ -13,7 +13,7 @@ class UserController extends Controller
      * 判断用户是否存在
      * $parm jsCode
      * */
-    public function userOrCreate(Request $request)
+    public function userIfExist(Request $request)
     {
         // //先获取openid
         $res = json_decode(ToolController::getOpenId($request)->getContent());
@@ -24,23 +24,10 @@ class UserController extends Controller
         if (isset($res->openId)) {
             $openId = $res->openId;
             $user = User::find($openId);
-            //如果存在openid，则继续，如果不存在，则创建一个新用户
+            //如果存在openid，则继续，如果不存在，则返回不存在
             if (!isset($user)) {
-                $num = User::count() + 10000;
-                //1. 创建用户表
-                $user = new User();
-                $user->open_id = $openId;
-                $user->user_name = '微信用户' . $num;
-
-                //2. 创建用户学习表
-                $study = new Study();
-                $study->open_id = $openId;
-
-                $user->save();
-                $study->save();
-
                 //创建成功返回创建成功，并返回openid
-                return response()->json(['result' => 'success', 'msg' => ['openid' => $openId]]);
+                return response()->json(['result' => 'notExist', 'msg' => ['openid' => $openId]]);
             } else
                 //已经存在返回exist
                 return response()->json(['result' => 'exist', 'msg' => ['openid' => $openId]]);
@@ -60,11 +47,23 @@ class UserController extends Controller
             if ($openId) {
                 $updateItem = '';
                 $user = User::find($openId);
-                //用户不存在就返回用户不存在
+                //用户不存在就创建新用户
                 if (!isset($user)) {
-                    return response()->json(['result' => 'fail', 'msg' => 'user not exits']);
-                }
+                    $num = User::count() + 10000;
+                    //1. 创建用户表
+                    $user = new User();
+                    $user->open_id = $openId;
+                    $user->user_name = '微信用户' . $num;
+    
+                    //2. 创建用户学习表
+                    $study = new Study();
+                    $study->open_id = $openId;
+    
+                    $user->save();
+                    $study->save();
 
+                    $updateItem .= '创建了新用户 ';
+                }
                 $userInfo = $request->input('userInfo');
                 $slogan = $request->input('slogan');
                 $target = $request->input('target');
