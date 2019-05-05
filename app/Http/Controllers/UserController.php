@@ -63,6 +63,7 @@ class UserController extends Controller
                     $study->save();
 
                     $updateItem .= '创建了新用户 ';
+                    $user = User::find($openId);
                 }
                 $userInfo = $request->input('userInfo');
                 $slogan = $request->input('slogan');

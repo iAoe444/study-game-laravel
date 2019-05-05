@@ -44,6 +44,7 @@ Route::group(['prefix' => 'store'],function (){
     Route::post('addGoods',['as'=>'addGoods','uses'=>'StoreController@addGoods']);
     Route::post('updateGoods',['as'=>'updateGoods','uses'=>'StoreController@updateGoods']);
     Route::post('deleteGoods',['as'=>'deleteGoods','uses'=>'StoreController@deleteGoods']);
+    Route::post('buyGoods',['as'=>'buyGoods','uses'=>'StoreController@buyGoods']);
     // Route::post('getTask',['as'=>'getGoods','uses'=>'StoreController@getTasks']);
  });
 

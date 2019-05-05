@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Store;
 use Illuminate\Http\Request;
+use App\Study;
 
 class StoreController extends Controller
 {
@@ -75,10 +76,39 @@ class StoreController extends Controller
             if($Goods->delete())
                 return response()->json(['result' => 'success','msg' => 'deleteGoods success']);
             else
-                return response()->json(['result' => 'success','msg' => 'deleteGoods error']);
+                return response()->json(['result' => 'fail','msg' => 'deleteGoods error']);
         }
         else
             return response()->json(['result' => 'fail','msg' => 'lost goodsId']);
+    }
+
+    /**
+     * 购买货物
+      */
+    public function buyGoods(Request $request)
+    {
+        $goodsId = $request->input('goodsId');
+        $openId = $request->input('openId');
+        if($goodsId&&$openId)
+        {
+            $goods = Store::find($goodsId);
+            $userStudy = Study::find($openId);
+            if($goods&&$userStudy){
+                $coinCost = $goods->coin;   //这个商品的价格
+                $myCoin = $userStudy->coin; //用户拥有的金币
+                $restCoin = $myCoin-$coinCost;
+                if($restCoin<0)
+                    return response()->json(['result' => 'fail','msg' => 'you dont have enough coin']);
+                else{
+                    $userStudy->coin = $restCoin;
+                    $userStudy->save();
+                    return response()->json(['result' => 'success','msg' => ['restCoin'=>$restCoin]]);
+                }
+            }else
+                return response()->json(['result' => 'fail','msg' => 'goods or userStudy not exist']);
+        }
+        else
+            return response()->json(['result' => 'fail','msg' => 'lost param']);
     }
 
     //--------------------------------工具类---------------------------------------------
