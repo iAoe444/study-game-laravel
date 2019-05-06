@@ -53,7 +53,7 @@ class StoreController extends Controller
             {
                 $newName = time().".".$file->extension();
                 $file->move("image/goods",$newName);
-                $Goods->img = "images/goods".$newName;
+                $Goods->img = "image/goods/".$newName;
             }
             if($goods)
                 $Goods->goods = $goods;
