@@ -35,6 +35,15 @@ class Kernel extends ConsoleKernel
             if(date("D") == "Mon")
                 Study::query()->update(['weekly_time'=>0]);         //周时间
             Study::query()->update(['daily_time'=>0]);              //日时间
+
+            //用于清空plan表
+            $tasks = Task::get()
+                    ->where('plan_classify','everyday');
+            foreach($tasks as $task){
+                $task->plan_useTime = 0;
+                $task->plan_done = 0;
+                $task->save();
+            }
         })->daily();
 
         $schedule->call(function (){

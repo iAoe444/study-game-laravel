@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\store;
 use App\Study;
+use App\Task;
 
 include "Utils/getid3/getid3.php";
 class TestController extends Controller
@@ -119,5 +120,22 @@ class TestController extends Controller
         var_dump($command);
 
         // return response()->file('audio\123.mp3');
+    }
+
+    //修改字段
+    public function edit(Request $request)
+    {
+        $tasks = Task::get()
+            ->where('plan_classify','everyday');
+        foreach($tasks as $task){
+            $task->plan_useTime = 0;
+            $task->plan_done = 0;
+            $task->save();
+        }
+    }
+
+    public function test(Request $request)
+    {
+        ToolController::sendReport();
     }
 }
