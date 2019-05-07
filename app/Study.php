@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Study extends Model
 {
-    protected $table='user_study';
+    protected $table='user_study_time';
     protected $primaryKey = 'open_id';
 
     public $timestamps = true;

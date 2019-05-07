@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Study;
@@ -10,6 +9,7 @@ use Illuminate\Support\Facades\Cache;
 use function GuzzleHttp\json_decode;
 use function GuzzleHttp\json_encode;
 
+include "Utils/getid3/getid3.php";
 class ToolController extends Controller
 {
     /*
@@ -74,6 +74,17 @@ class ToolController extends Controller
                 return response()->json(['result' => 'fail', 'msg' => 'error openId']);
         } else
             return response()->json(['result' => 'fail', 'msg' => 'Lost param']);
+    }
+
+    public function musicOn()
+    {
+        $fileUrl = 'audio/audio'.mt_rand(1,10).'.mp3';
+        return response()->file($fileUrl);
+    }
+    public function musicOff()
+    {
+        $fileUrl = 'audio/music_off.mp3';
+        return response()->file($fileUrl);
     }
 
     //------------------------------------工具方法------------------------------------------------
@@ -208,7 +219,7 @@ class ToolController extends Controller
         $acccessToken = self::getAccessToken();
         $templateId = 'M9pvZN4zmUUHAkue_cbayofXx1VeQqFeZjSM-m4b50E';
 
-        $users = Study::get()->where('if_upload', 1);        //获取所有今天学习的用户
+        $users = Study::get()->where('if_study', 1);        //获取所有今天学习的用户
         foreach ($users as $user) {
             //获取需要发送的数据
             $openId = $user->open_id;
@@ -237,7 +248,7 @@ class ToolController extends Controller
 
             //4.--------------------4.设置用户为未学习-----------------------------
             //用户设置为今天未学习
-            $user->if_upload = 0;
+            $user->if_study = 0;
             $user->save();
         }
     } 

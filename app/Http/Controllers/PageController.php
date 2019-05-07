@@ -38,12 +38,12 @@ class PageController extends Controller
         //今日完成的任务数量
         $complete = Task::get()
             ->where('open_id', $openId)
-            ->where('if_complete', 1)
-            ->where('updated_at', '>', $today)
-            ->where('updated_at', '<=', $today + 3600 * 24)
+            ->where('plan_done', 1)
+            ->where('update_at', '>', $today)
+            ->where('update_at', '<=', $today + 3600 * 24)
             ->count();
         //未完成的任务数量
-        $uncomplete = Task::get()->where('open_id', $openId)->where('if_complete', 0)->count();
+        $uncomplete = Task::get()->where('open_id', $openId)->where('plan_done', 0)->count();
         $msg['completeMsg'] = [$complete, $uncomplete + $complete];
 
         //-------------4.完成的时间-------------
@@ -90,6 +90,25 @@ class PageController extends Controller
         $msg['coin'] = Study::find($openId)->coin;
         //----------------4.用户商品------------------------
         $msg['goodsArr'] = StoreController::getGoods($openId);
+
+        return response()->json(['result' => 'success', 'msg' => $msg]);
+    }
+
+    /**
+     *  设置页面
+     */
+    public function setting(Request $request)
+    {
+        if (is_array($openId = self::userIfExit($request)))
+            return response()->json(self::userIfExit($request));
+        $msg = array();
+        $user = User::find($openId);
+        //----------------1.用户昵称------------------------
+        $msg['userName'] = $user->user_name;
+        //----------------2.用户头像------------------------
+        $msg['avatarUrl'] = $user->avatar_url;
+        //----------------3.用户口号------------------------
+        $msg['sloagn'] = $user->slogan;
 
         return response()->json(['result' => 'success', 'msg' => $msg]);
     }

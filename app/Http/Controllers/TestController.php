@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\store;
 use App\Study;
 
+include "Utils/getid3/getid3.php";
 class TestController extends Controller
 {
     //用于上传图片
@@ -37,12 +38,12 @@ class TestController extends Controller
     }
 
     //批量发模板消息
-    public function test(Request $request)
+    public function sendReport(Request $request)
     {
         $acccessToken = ToolController::getAccessToken();
         $templateId = 'M9pvZN4zmUUHAkue_cbayofXx1VeQqFeZjSM-m4b50E';
 
-        $users = Study::get()->where('if_upload', 1);        //获取所有今天学习的用户
+        $users = Study::get()->where('study', 1);        //获取所有今天学习的用户
         foreach ($users as $user) {
             //获取需要发送的数据
             $openId = $user->open_id;
@@ -71,8 +72,52 @@ class TestController extends Controller
 
             //4.--------------------4.设置用户为未学习-----------------------------
             //用户设置为今天未学习
-            $user->if_upload = 0;
+            $user->if_study = 0;
             $user->save();
         }
+    }
+
+    //传输音频
+    public function sendAudio(Request $request)
+    {
+        return response()->file('audio\kokyu.m4a');
+    }
+
+    //剪辑音频
+    public function cutAudio(Request $request)
+    {
+        $time = 25*60;
+        $audioNum = 88;
+        $audioList = "";
+        $audioArr = "";
+
+        //获取音乐列表
+        $getID3 = new \getID3();
+        $audio = array();    //TODO 用于记录选择个歌曲，不重复
+        $totalTime = 0;
+        $i = 0;
+        while($totalTime<$time)
+        {
+            $chooseAudio = mt_rand(1,$audioNum);
+            $fileUrl = "audio\\".$chooseAudio.".mp3";
+            //为command做准备
+            $audioList .= " -i D:/PHP_WorkSpace/laravel/public/audio/".$chooseAudio.".mp3";
+            $audioArr .= "[".$i.":0] ";
+
+            $audio[$i++] = $fileUrl;
+
+            $totalTime += $getID3->analyze($fileUrl)['playtime_seconds'];
+        }
+        //获取最后一个音频要剪的位置
+        $cutTime = $getID3->analyze($fileUrl)['playtime_seconds']-($totalTime-$time);
+        //把它转为分钟：秒数的形式
+        $cutTime = gmdate('H:i:s',$cutTime);
+
+        //合并音频
+        $command = "ffmpeg".$audioList." -filter_complex '".$audioArr."concat=n=".$i.":v=0:a=1 [a]' -map [a] 123.mp3";
+
+        var_dump($command);
+
+        // return response()->file('audio\123.mp3');
     }
 }

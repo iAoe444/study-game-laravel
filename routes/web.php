@@ -31,6 +31,8 @@ Route::group(['prefix' => 'tool'],function (){
     Route::any('getOpenId',['as'=>'getOpenId','uses'=>'ToolController@getOpenId']);
     Route::post('getText',['as'=>'getText','uses'=>'ToolController@getText']);
     Route::post('saveReportFormId',['as'=>'saveReportFormId','uses'=>'ToolController@saveReportFormId']);
+    Route::any('musicOn',['as'=>'musicOn','uses'=>'ToolController@musicOn']);
+    Route::any('musicOff',['as'=>'musicOff','uses'=>'ToolController@musicOff']);
 });
 
 Route::group(['prefix' => 'task'],function (){
@@ -53,6 +55,7 @@ Route::group(['prefix' => 'store'],function (){
     Route::post('function',['as'=>'test','uses'=>'PageController@_function']);
     Route::post('ranking',['as'=>'ranking','uses'=>'StudyController@ranking']);
     Route::post('store',['as'=>'store','uses'=>'PageController@store']);
+    Route::post('setting',['as'=>'setting','uses'=>'PageController@setting']);
  });
 
- Route::post('test',['as'=>'test','uses'=>'TestController@test']);
+ Route::any('test',['as'=>'test','uses'=>'TestController@test']);

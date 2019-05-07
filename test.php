@@ -107,53 +107,54 @@
 //FIXME 去掉事件
 
 
-function getDuanWei($duanWei)
-{
-    $duanWeiMsg=array();
-    $duanWeiArr = [
-        '倔强青铜Ⅲ'=>3,
-        '倔强青铜Ⅱ'=>3,
-        '倔强青铜Ⅰ'=>3,
-        '秩序白银Ⅲ'=>3,
-        '秩序白银Ⅱ'=>3,
-        '秩序白银Ⅰ'=>3,
-        '荣耀黄金Ⅳ'=>4,
-        '荣耀黄金Ⅲ'=>4,
-        '荣耀黄金Ⅱ'=>4,
-        '荣耀黄金Ⅰ'=>4,
-        '尊贵铂金Ⅳ'=>4,
-        '尊贵铂金Ⅲ'=>4,
-        '尊贵铂金Ⅱ'=>4,
-        '尊贵铂金Ⅰ'=>4,
-        '永恒钻石Ⅴ'=>5,
-        '永恒钻石Ⅳ'=>5,
-        '永恒钻石Ⅲ'=>5,
-        '永恒钻石Ⅱ'=>5,
-        '永恒钻石Ⅰ'=>5,
-        '至尊星耀Ⅴ'=>5,
-        '至尊星耀Ⅳ'=>5,
-        '至尊星耀Ⅲ'=>5,
-        '至尊星耀Ⅱ'=>5,
-        '至尊星耀Ⅰ'=>5
-    ];
-    $sum = $preSum = 0;
-    foreach ($duanWeiArr as $key => $value) {
-        $sum += $value;
-        if($duanWei<=$sum)
-        {
-            $duanWeiMsg['name']=$key;
-            $duanWeiMsg['num']=[$duanWei-$preSum,$value];
-            return $duanWeiMsg;
-        }
-        $preSum = $sum;
-    }
-    $duanWeiMsg['name']='最强王者';
-    $duanWeiMsg['num']=[$duanWei-$sum];
-    return $duanWeiMsg;
-}
+// function getDuanWei($duanWei)
+// {
+//     $duanWeiMsg=array();
+//     $duanWeiArr = [
+//         '倔强青铜Ⅲ'=>3,
+//         '倔强青铜Ⅱ'=>3,
+//         '倔强青铜Ⅰ'=>3,
+//         '秩序白银Ⅲ'=>3,
+//         '秩序白银Ⅱ'=>3,
+//         '秩序白银Ⅰ'=>3,
+//         '荣耀黄金Ⅳ'=>4,
+//         '荣耀黄金Ⅲ'=>4,
+//         '荣耀黄金Ⅱ'=>4,
+//         '荣耀黄金Ⅰ'=>4,
+//         '尊贵铂金Ⅳ'=>4,
+//         '尊贵铂金Ⅲ'=>4,
+//         '尊贵铂金Ⅱ'=>4,
+//         '尊贵铂金Ⅰ'=>4,
+//         '永恒钻石Ⅴ'=>5,
+//         '永恒钻石Ⅳ'=>5,
+//         '永恒钻石Ⅲ'=>5,
+//         '永恒钻石Ⅱ'=>5,
+//         '永恒钻石Ⅰ'=>5,
+//         '至尊星耀Ⅴ'=>5,
+//         '至尊星耀Ⅳ'=>5,
+//         '至尊星耀Ⅲ'=>5,
+//         '至尊星耀Ⅱ'=>5,
+//         '至尊星耀Ⅰ'=>5
+//     ];
+//     $sum = $preSum = 0;
+//     foreach ($duanWeiArr as $key => $value) {
+//         $sum += $value;
+//         if($duanWei<=$sum)
+//         {
+//             $duanWeiMsg['name']=$key;
+//             $duanWeiMsg['num']=[$duanWei-$preSum,$value];
+//             return $duanWeiMsg;
+//         }
+//         $preSum = $sum;
+//     }
+//     $duanWeiMsg['name']='最强王者';
+//     $duanWeiMsg['num']=[$duanWei-$sum];
+//     return $duanWeiMsg;
+// }
 
-// var_dump($targetTime[0].'-'.$targetTime[1].'-'.$targetTime[2]);
-// $targetTime = date("Y-m-d",'2019-05-11');
-$targetTime = strtotime('2019-05-11');
-var_dump($targetTime);
+// // var_dump($targetTime[0].'-'.$targetTime[1].'-'.$targetTime[2]);
+// // $targetTime = date("Y-m-d",'2019-05-11');
+// $targetTime = strtotime('2019-05-11');
+// var_dump($targetTime);
 
+var_dump(exec("‪D:/PHP_WorkSpace/laravel/public/audio/ffmpeg/bin/ffmpeg.exe -i D:/PHP_WorkSpace/laravel/public/audio/4.mp3 -i D:/PHP_WorkSpace/laravel/public/audio/14.mp3 -i D:/PHP_WorkSpace/laravel/public/audio/32.mp3 -i D:/PHP_WorkSpace/laravel/public/audio/67.mp3 -i D:/PHP_WorkSpace/laravel/public/audio/57.mp3 -filter_complex '[0:0] [1:0] [2:0] [3:0] [4:0] concat=n=5:v=0:a=1 [a]' -map [a] 123.mp3"));

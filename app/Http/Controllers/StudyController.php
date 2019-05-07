@@ -185,7 +185,7 @@ class StudyController extends Controller
     private static function getRanking($type)
     {
         $ranking = Study::join('user',function ($join){
-            $join->on('user.open_id','=','user_study.open_id');
+            $join->on('user.open_id','=','user_study_time.open_id');
         })->orderBy($type.'_time','desc')
             ->limit(10)
             ->get(['user_name',$type.'_time','avatar_url']);
@@ -212,7 +212,7 @@ class StudyController extends Controller
         (
         SELECT t.*, @rownum := @rownum + 1 AS rownum
         FROM (SELECT @rownum := 0) r,
-        (SELECT * FROM user_study ORDER BY ".$type."_time DESC) AS t
+        (SELECT * FROM user_study_time ORDER BY ".$type."_time DESC) AS t
         ) AS b WHERE b.open_id = '".$openId."'");
         $user = User::find($openId);
         $typeTime = $type.'_time';

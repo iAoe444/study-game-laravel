@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `user_study`
 	`coin` INT NOT NULL DEFAULT 0 COMMENT '金币',
     `duan_wei` INT NOT NULL DEFAULT 0 COMMENT '段位',
     `complete_task` INT NOT NULL DEFAULT 0 COMMENT '今天完成的任务数量',
-	`if_upload` BOOLEAN NOT NULL DEFAULT FALSE COMMENT '用户今天是否上传记录',
+	`if_study` BOOLEAN NOT NULL DEFAULT FALSE COMMENT '用户今天是否上传记录',
     `report_form_id` CHAR(32) DEFAULT '' COMMENT '用于学习报告的formid',
 	`updated_at` INT NOT NULL DEFAULT 0 COMMENT '更新时间', 
     `created_at` INT NOT NULL DEFAULT 0 COMMENT '创建时间'
