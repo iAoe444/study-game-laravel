@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Cache;
 use function GuzzleHttp\json_decode;
 use function GuzzleHttp\json_encode;
 
-include "Utils/getid3/getid3.php";
 class ToolController extends Controller
 {
     /*
@@ -62,15 +61,13 @@ class ToolController extends Controller
         $formId = $request->input('formId');
         if ($openId && $formId) {
             $userStudy = Study::find($openId);
-            if($userStudy)
-            {
+            if ($userStudy) {
                 $userStudy->report_form_id = $formId;
-                if($userStudy->save())
+                if ($userStudy->save())
                     return response()->json(['result' => 'success', 'msg' => 'success']);
                 else
                     return response()->json(['result' => 'fail', 'msg' => 'save error']);
-            }
-            else
+            } else
                 return response()->json(['result' => 'fail', 'msg' => 'error openId']);
         } else
             return response()->json(['result' => 'fail', 'msg' => 'Lost param']);
@@ -78,7 +75,7 @@ class ToolController extends Controller
 
     public function musicOn()
     {
-        $fileUrl = 'audio/audio'.mt_rand(1,10).'.mp3';
+        $fileUrl = 'audio/audio' . mt_rand(1, 10) . '.mp3';
         return response()->file($fileUrl);
     }
     public function musicOff()
@@ -171,7 +168,7 @@ class ToolController extends Controller
     /**
      * 发送模板消息
      */
-    public static function sendTemplateMsg($accessToken, $openId, $formId, $template_id, $data = NULL,$page='pages/index/index')
+    public static function sendTemplateMsg($accessToken, $openId, $formId, $template_id, $data = NULL, $page = 'pages/index/index')
     {
 
         $url = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token={$accessToken}";
@@ -181,7 +178,7 @@ class ToolController extends Controller
         $keyWord = array();
         $i = 1;
         foreach ($data as $value)
-            $keyWord['keyword'.$i++] = ['value'=>$value];
+            $keyWord['keyword' . $i++] = ['value' => $value];
 
         $postData = array(
             'touser' => $openId,
@@ -189,7 +186,7 @@ class ToolController extends Controller
             'form_id' => $formId,
             'data' => $keyWord,
             'page' => $page,
-            'emphasis_keyword'=>'keyword1.DATA'
+            'emphasis_keyword' => 'keyword1.DATA'
         );
         $postData = json_encode($postData);
 
@@ -213,7 +210,7 @@ class ToolController extends Controller
 
     /**
      * 批量向用户发送学习报告
-      */
+     */
     public static function sendReport()
     {
         $acccessToken = self::getAccessToken();
@@ -226,24 +223,24 @@ class ToolController extends Controller
             $formId = $user->report_form_id;
             //--------------------1.获取用户的学习时间-----------------------
             $studyTime = StudyController::ts2hm($user->daily_time);
-            $studyTime = $studyTime['hour'].'小时'.$studyTime['min'].'分钟';
+            $studyTime = $studyTime['hour'] . '小时' . $studyTime['min'] . '分钟';
 
-            //---------------------2.完成任务情况-----------------------------
+            //-------------2.完成任务情况-------------
             //获取今天凌晨0点的时间
             $today = strtotime(date('Y-m-d', time()));
             //今日完成的任务数量
             $complete = Task::get()
-                ->where('open_id', $openId)
-                ->where('if_complete', 1)
-                ->where('updated_at', '>', $today)
-                ->where('updated_at', '<=', $today + 3600 * 24)
+                ->where('openid', $openId)
+                ->where('plan_done', 1)
+                ->where('update_at', '>', $today)
+                ->where('update_at', '<=', $today + 3600 * 24)
                 ->count();
             //未完成的任务数量
-            $uncomplete = Task::get()->where('open_id', $openId)->where('if_complete', 0)->count();
+            $uncomplete = Task::get()->where('openid', $openId)->where('plan_done', 0)->count();
 
             //-----------------------3.发送模板消息--------------------------------
             //创建data
-            $data = [$studyTime, $complete.'个任务', ($complete+$uncomplete).'个任务', '点击进入小程序查看详细报告'];
+            $data = [$studyTime, $complete . '个任务', ($complete + $uncomplete) . '个任务', '点击进入小程序查看详细报告'];
             self::sendTemplateMsg($acccessToken, $openId, $formId, $templateId, $data);
 
             //4.--------------------4.设置用户为未学习-----------------------------
@@ -251,5 +248,5 @@ class ToolController extends Controller
             $user->if_study = 0;
             $user->save();
         }
-    } 
+    }
 }

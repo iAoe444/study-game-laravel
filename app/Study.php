@@ -7,6 +7,7 @@ class Study extends Model
 {
     protected $table='user_study_time';
     protected $primaryKey = 'open_id';
+    protected $keyType = 'string';
 
     public $timestamps = true;
     public function getDateFormat()
