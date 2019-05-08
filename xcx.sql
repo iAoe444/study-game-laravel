@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `user`
     `created_at` INT NOT NULL DEFAULT 0 COMMENT '创建时间'
 )ENGINE=InnoDB DEFAULT CHARSET=UTF8 COMMENT='用户表';
 
-CREATE TABLE IF NOT EXISTS `user_study`
+CREATE TABLE IF NOT EXISTS `user_study_time`
 (
 	`open_id` CHAR(28) NOT NULL PRIMARY KEY COMMENT '微信openid',
     `daily_time` INT NOT NULL DEFAULT 0 COMMENT '日学习时长',

@@ -37,13 +37,13 @@ class PageController extends Controller
         $today = strtotime(date('Y-m-d', time()));
         //今日完成的任务数量
         $complete = Task::get()
-            ->where('open_id', $openId)
+            ->where('openid', $openId)
             ->where('plan_done', 1)
             ->where('update_at', '>', $today)
             ->where('update_at', '<=', $today + 3600 * 24)
             ->count();
         //未完成的任务数量
-        $uncomplete = Task::get()->where('open_id', $openId)->where('plan_done', 0)->count();
+        $uncomplete = Task::get()->where('openid', $openId)->where('plan_done', 0)->count();
         $msg['completeMsg'] = [$complete, $uncomplete + $complete];
 
         //-------------4.完成的时间-------------
